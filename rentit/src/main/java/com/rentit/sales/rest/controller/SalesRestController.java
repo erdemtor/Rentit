@@ -1,6 +1,7 @@
 package com.rentit.sales.rest.controller;
 
 import com.rentit.common.application.exceptions.PlantNotFoundException;
+import com.rentit.common.application.exceptions.PurchaseOrderRejectionPeriodException;
 import com.rentit.sales.application.dto.PurchaseOrderDTO;
 import com.rentit.sales.application.service.SalesService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.time.LocalDate;
 import java.util.List;
 
 
@@ -28,7 +30,7 @@ public class SalesRestController {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(new URI(poDTO.getId().getHref()));
-        return new ResponseEntity<PurchaseOrderDTO>(poDTO, headers, HttpStatus.CREATED);
+        return new ResponseEntity<>(poDTO, headers, HttpStatus.CREATED);
     }
 
     @GetMapping
@@ -47,17 +49,17 @@ public class SalesRestController {
         return salesService.acceptPurchaseOrder(id);
     }
 
-    @DeleteMapping("/{id}/accept")
+    @DeleteMapping("/{id}/reject")
     public PurchaseOrderDTO rejectPurchaseOrder(@PathVariable String id) throws Exception {
         return salesService.rejectPurchaseOrder(id);
     }
 
     @DeleteMapping("/{id}")
     public PurchaseOrderDTO closePurchaseOrder(@PathVariable String id) throws Exception {
-        return null;
+        return salesService.closePurchaseOrder(id);
     }
 
-    @ExceptionHandler(PlantNotFoundException.class)
+    @ExceptionHandler({PlantNotFoundException.class, PurchaseOrderRejectionPeriodException.class})
     @ResponseStatus(HttpStatus.PRECONDITION_FAILED)
     public String bindExceptionHandler(Exception ex) {
         return ex.getMessage();

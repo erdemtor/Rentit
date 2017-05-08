@@ -39,6 +39,16 @@ public class InventoryRestController {
         return inventoryService.findPlant(id);
     }
 
+    @GetMapping("/{id}availability")
+    public boolean checkAvailability(@PathVariable String id,
+                                     @RequestParam(name = "startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)LocalDate startDate,
+                                     @RequestParam(name = "endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)LocalDate endDate) throws PlantNotFoundException {
+        return inventoryService.isAvailable(id, startDate, endDate);
+    }
+
+
+
+
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String handleException(Exception exc) {

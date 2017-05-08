@@ -44,7 +44,7 @@ public class PurchaseOrderAssembler extends ResourceAssemblerSupport<PurchaseOrd
                                     .rejectPurchaseOrder(dto.get_id())).toString(),
                             "reject", DELETE));
                     break;
-                case OPEN:
+                case ACCEPTED:
                     dto.add(new ExtendedLink(
                             ControllerLinkBuilder.linkTo(methodOn(SalesRestController.class)
                                     .closePurchaseOrder(dto.get_id())).toString(),

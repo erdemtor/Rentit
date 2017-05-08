@@ -42,15 +42,28 @@ public class PurchaseOrder {
 
     public void confirmReservation(PlantReservation plantReservation, BigDecimal price) {
         plantReservations.add(plantReservation);
-        total = price.multiply(BigDecimal.valueOf(rentalPeriod.numberOfWorkingDays()));
+        long workingDays = rentalPeriod.numberOfWorkingDays();
+        total = price.multiply(BigDecimal.valueOf(workingDays));
         status = POStatus.PENDING;
     }
 
     public void handleRejection() {
         status = POStatus.REJECTED;
     }
+    public void cancel() {
+        status = POStatus.REJECTED_BY_CUSTOMER;
+    }
+
+
+    public void handleClose() {
+        status = POStatus.CLOSED;
+    }
 
     public void handleAcceptance() {
-        status = POStatus.OPEN;
+        status = POStatus.ACCEPTED;
+    }
+
+    public void updateStatus(POStatus status) {
+        this.status = status;
     }
 }

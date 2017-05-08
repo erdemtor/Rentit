@@ -32,6 +32,10 @@ public class InventoryService {
         return plantInventoryEntryAssembler.toResources(inventoryRepository.findAvailable(name, startDate, endDate));
     }
 
+    public boolean isAvailable(String plantInventoryID, LocalDate startDate, LocalDate endDate){
+       return inventoryRepository.isAvailable(plantInventoryID, startDate, endDate);
+    }
+
     public PlantReservation createPlantReservation(PlantInventoryEntry plantInventoryEntry, BusinessPeriod schedule) throws PlantNotFoundException {
         List<PlantInventoryItem> items = inventoryRepository.findAvailableInventoryItems(plantInventoryEntry, schedule.getStartDate(), schedule.getEndDate());
         if (items.size() == 0)

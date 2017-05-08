@@ -6,8 +6,10 @@ import lombok.NoArgsConstructor;
 import lombok.Value;
 
 import javax.persistence.Embeddable;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.stream.Stream;
 
 @Embeddable
 @Value
@@ -18,6 +20,18 @@ public class BusinessPeriod {
     LocalDate endDate;
 
     public long numberOfWorkingDays() {
-        return ChronoUnit.DAYS.between(startDate, endDate) + 1;
+        int days = 0;
+        LocalDate tempDate = startDate;
+        while (!tempDate.isAfter(endDate)){
+            if(!isWeekend(tempDate)){
+                days++;
+            }
+            tempDate = tempDate.plusDays(1);
+        }
+        return days;
+    }
+
+    private boolean isWeekend(LocalDate date){
+       return  (date.getDayOfWeek().equals(DayOfWeek.SATURDAY) || date.getDayOfWeek().equals(DayOfWeek.SUNDAY));
     }
 }
