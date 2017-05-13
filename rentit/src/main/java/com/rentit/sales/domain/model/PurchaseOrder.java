@@ -7,6 +7,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,5 +66,10 @@ public class PurchaseOrder {
 
     public void updateStatus(POStatus status) {
         this.status = status;
+    }
+
+    public PurchaseOrder updateRentalPeriod(LocalDate startDate, LocalDate endDate) {
+        this.rentalPeriod = BusinessPeriod.of(startDate, endDate);
+        return this;
     }
 }

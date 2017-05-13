@@ -1,10 +1,14 @@
 package com.rentit.sales.rest.controller;
 
+import com.rentit.common.application.exceptions.PlantInventoryEntryNotAvailableException;
 import com.rentit.common.application.exceptions.PlantNotFoundException;
+import com.rentit.common.application.exceptions.PurchaseOrderNotFoundException;
 import com.rentit.common.application.exceptions.PurchaseOrderRejectionPeriodException;
 import com.rentit.sales.application.dto.PurchaseOrderDTO;
 import com.rentit.sales.application.service.SalesService;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +16,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -27,11 +33,19 @@ public class SalesRestController {
     @PostMapping
     public ResponseEntity<PurchaseOrderDTO> createPurchaseOrder(@RequestBody PurchaseOrderDTO poDTO) throws Exception {
         poDTO = salesService.createPurchaseOrder(poDTO);
-
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(new URI(poDTO.getId().getHref()));
         return new ResponseEntity<>(poDTO, headers, HttpStatus.CREATED);
     }
+
+    @PostMapping("/{id}")
+    public PurchaseOrderDTO modifyPurchaseOrder(@PathVariable String id,
+                                                @RequestParam(name = "startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+                                                @RequestParam(name = "endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) throws Exception {
+        return salesService.updateRentalPeriod(id, startDate, endDate);
+    }
+
+
 
     @GetMapping
     public List<PurchaseOrderDTO> getAllPurchaseOrders() throws Exception {
@@ -59,9 +73,14 @@ public class SalesRestController {
         return salesService.closePurchaseOrder(id);
     }
 
-    @ExceptionHandler({PlantNotFoundException.class, PurchaseOrderRejectionPeriodException.class})
-    @ResponseStatus(HttpStatus.PRECONDITION_FAILED)
+    @ExceptionHandler({ PlantNotFoundException.class,
+                        PurchaseOrderRejectionPeriodException.class,
+                        PlantInventoryEntryNotAvailableException.class,
+                        PurchaseOrderNotFoundException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String bindExceptionHandler(Exception ex) {
-        return ex.getMessage();
+        Map<String, String> map = new HashMap<>();
+        map.put("message", ex.getMessage());
+        return String.valueOf(new JSONObject(map));
     }
 }

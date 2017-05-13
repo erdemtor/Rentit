@@ -29,9 +29,9 @@ public class InventoryRepositoryImpl implements CustomInventoryRepository {
 
     @Override
     public boolean isAvailable(String id, LocalDate startDate, LocalDate endDate) {
-        TypedQuery<PlantInventoryEntry> query = em.createQuery(
+        TypedQuery<Integer> query = em.createQuery(
                 "select 1 from PlantInventoryItem i where lower(i.plantInfo.id) = ?1 and i.equipmentCondition = com.rentit.inventory.domain.model.EquipmentCondition.SERVICEABLE and i not in (select r.plant from PlantReservation r where ?2 < r.schedule.endDate and ?3 > r.schedule.startDate)"
-                , PlantInventoryEntry.class)
+                , Integer.class)
                 .setParameter(1,  id)
                 .setParameter(2, startDate)
                 .setParameter(3, endDate);

@@ -21,17 +21,12 @@ public class InventoryRestController {
     @GetMapping
     public List<PlantInventoryEntryDTO> findAvailablePlants(
             @RequestParam(name = "name", required = false) Optional<String> plantName,
-            @RequestParam(name = "startDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Optional<LocalDate> startDate,
-            @RequestParam(name = "endDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Optional<LocalDate> endDate) {
-
-        if (plantName.isPresent() && startDate.isPresent() && endDate.isPresent()) {
-            if (endDate.get().isBefore(startDate.get()))
+            @RequestParam(name = "startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(name = "endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+            if (endDate.isBefore(startDate))
                 throw new IllegalArgumentException("Something wrong with the requested period ('endDate' happens before 'startDate')");
-            return inventoryService.findAvailablePlants(plantName.get(), startDate.get(), endDate.get());
-        } else
-            throw new IllegalArgumentException(
-                    String.format("Wrong number of parameters: Name='%s', Start date='%s', End date='%s'",
-                            plantName.orElse(""), startDate.orElse(null), endDate.orElse(null)));
+            return inventoryService.findAvailablePlants(plantName.orElse(""), startDate, endDate);
+
     }
 
     @GetMapping("/{id}")
@@ -39,7 +34,7 @@ public class InventoryRestController {
         return inventoryService.findPlant(id);
     }
 
-    @GetMapping("/{id}availability")
+    @GetMapping("/{id}/availability")
     public boolean checkAvailability(@PathVariable String id,
                                      @RequestParam(name = "startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)LocalDate startDate,
                                      @RequestParam(name = "endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)LocalDate endDate) throws PlantNotFoundException {
