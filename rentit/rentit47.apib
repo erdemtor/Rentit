@@ -1,0 +1,225 @@
+FORMAT: 1A
+HOST: https://rentit.com
+
+# RentIt API
+
+Polls is a simple API allowing consumers to view polls and vote in them.
+##  Find Plants  [/api/inventory/plants?{name,startDate,endDate}]
+
+
+### Find Available Plants [GET]
++ parameters
+    + name - name of the plant
+    + startDate - start date of rental period
+    + endDate - end date of rental period
+
++ Response 200 (application/json)
+
+        [
+          {
+            "_id": "2",
+            "name": "Mini excavator",
+            "description": "3 Tonne Mini excavator",
+            "price": 200,
+            "links": [
+              {
+                "rel": "self",
+                "href": "http://localhost:8080/api/inventory/plants/2"
+              }
+            ]
+          }
+        ]
+        
+## Plant Details [/api/inventory/plants/{id}]
+
+### Get Details of a Plant [GET]
+
++ Parameters
+    + id - id of the plant
+
++ Response 200 (application/json)
+
+        {
+          "_id": "1",
+          "name": "Mini excavator",
+          "description": "1.5 Tonne Mini excavator",
+          "price": 150,
+          "_links": {
+            "self": {
+              "href": "http://localhost:8080/api/inventory/plants/1"
+            }
+          }
+        }
+        
+## Plant Details Availability [/api/inventory/plants/{id}/availability?{startDate,endDate}]
+
+### Get Availability of a Plant [GET]
+
++ Parameters
+    + id - id of the plant
+    + startDate - start date of rental period
+    + endDate - end date of rental period
+
++ Response 200 (application/json)
+
+        {
+          "availability": true
+        }
+
+## Sales Purchase Order [/api/sales/orders]
+
+### Create a Purchase Order [POST]
+
++ Request (application/json)
+
+        {
+            "plant": {
+                "_id":"1",
+                "name":"Mini excavator"
+            },
+            "rentalPeriod": {
+                "startDate":"2017-05-22",
+                "endDate": "2017-05-22"
+            }
+        }
+
++ Response 200 (application/json)
+
+        {
+          "_id": "01f27996-e87b-4545-bf7e-8494ae71609c",
+          "plant": {
+            "_id": "1",
+            "name": "Mini excavator",
+            "description": "1.5 Tonne Mini excavator",
+            "price": 150,
+            "_links": {
+              "self": {
+                "href": "http://localhost:8080/api/inventory/plants/1"
+              }
+            }
+          },
+          "rentalPeriod": {
+            "startDate": [
+              2017,
+              5,
+              22
+            ],
+            "endDate": [
+              2017,
+              5,
+              22
+            ]
+          },
+          "total": 150,
+          "status": "PENDING",
+          "_links": {
+            "self": {
+              "href": "http://localhost:8080/api/sales/orders/01f27996-e87b-4545-bf7e-8494ae71609c"
+            }
+          },
+          "_xlinks": [
+            {
+              "href": "http://localhost:8080/api/sales/orders/01f27996-e87b-4545-bf7e-8494ae71609c/accept",
+              "method": "POST",
+              "_rel": "accept"
+            },
+            {
+              "href": "http://localhost:8080/api/sales/orders/01f27996-e87b-4545-bf7e-8494ae71609c/reject",
+              "method": "DELETE",
+              "_rel": "reject"
+            }
+          ]
+        }
+
+
+## Sales Purchase Order [/api/sales/orders/{id}?{startDate,endDate}]
+
+### Update Rental Period [POST]
+
++ Parameters
+    + id - id of the order
+    + startDate - startDate of the new period
+    + endDate - endDate of the new period
+
++ Response 200 (application/json)
+
+        {
+          "_id": "52707bba-78c6-4709-a1e1-2be868b041a6",
+          "plant": {
+            "_id": "1",
+            "name": "Mini excavator",
+            "description": "1.5 Tonne Mini excavator",
+            "price": 150,
+            "_links": {
+              "self": {
+                "href": "http://localhost:8080/api/inventory/plants/1"
+              }
+            }
+          },
+          "rentalPeriod": {
+            "startDate": [
+              2017,
+              5,
+              28
+            ],
+            "endDate": [
+              2017,
+              5,
+              31
+            ]
+          },
+          "total": 2400,
+          "status": "PENDING",
+          "_links": {
+            "self": {
+              "href": "http://localhost:8080/api/sales/orders/52707bba-78c6-4709-a1e1-2be868b041a6"
+            }
+          },
+          "_xlinks": [
+            {
+              "href": "http://localhost:8080/api/sales/orders/52707bba-78c6-4709-a1e1-2be868b041a6/accept",
+              "method": "POST",
+              "_rel": "accept"
+            },
+            {
+              "href": "http://localhost:8080/api/sales/orders/52707bba-78c6-4709-a1e1-2be868b041a6/reject",
+              "method": "DELETE",
+              "_rel": "reject"
+            }
+          ]
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

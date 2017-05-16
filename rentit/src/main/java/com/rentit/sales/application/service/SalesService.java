@@ -103,4 +103,8 @@ public class SalesService {
         if (!inventoryService.isAvailable(purchaseOrder.getPlant().getId(), startDate, endDate)) throw new PlantInventoryEntryNotAvailableException(purchaseOrder.getPlant().getName(),startDate,endDate);
         return purchaseOrderAssembler.toResource(purchaseOrderRepository.save(purchaseOrder.updateRentalPeriod(startDate, endDate)));
     }
+
+    public List<PlantInventoryEntry> findToBeDispatchedOn(LocalDate startDate) {
+            return purchaseOrderRepository.findToBeDispatchedOn(startDate);
+    }
 }

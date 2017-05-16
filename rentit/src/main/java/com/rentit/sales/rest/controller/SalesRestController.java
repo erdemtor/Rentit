@@ -4,6 +4,7 @@ import com.rentit.common.application.exceptions.PlantInventoryEntryNotAvailableE
 import com.rentit.common.application.exceptions.PlantNotFoundException;
 import com.rentit.common.application.exceptions.PurchaseOrderNotFoundException;
 import com.rentit.common.application.exceptions.PurchaseOrderRejectionPeriodException;
+import com.rentit.inventory.domain.model.PlantInventoryEntry;
 import com.rentit.sales.application.dto.PurchaseOrderDTO;
 import com.rentit.sales.application.service.SalesService;
 import org.json.JSONObject;
@@ -19,11 +20,8 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
-
-/**
- * Created by lgarcia on 3/10/2017.
- */
 @RestController
 @RequestMapping("/api/sales/orders")
 public class SalesRestController {
@@ -45,6 +43,10 @@ public class SalesRestController {
         return salesService.updateRentalPeriod(id, startDate, endDate);
     }
 
+    @GetMapping("/on")
+    public List<PlantInventoryEntry> getPurchaseOrderByStartDate(@RequestParam(name = "startDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Optional<LocalDate> startDate) throws Exception {
+        return salesService.findToBeDispatchedOn(startDate.orElse(LocalDate.now()));
+    }
 
 
     @GetMapping
