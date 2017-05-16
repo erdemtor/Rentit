@@ -1,7 +1,10 @@
 package com.rentit.inventory.application.service;
 
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import com.rentit.common.application.exceptions.PlantNotFoundException;
 import com.rentit.common.domain.model.BusinessPeriod;
+import com.rentit.inventory.application.dto.MaintenanceTaskDTO;
 import com.rentit.inventory.application.dto.PlantInventoryEntryDTO;
 import com.rentit.inventory.domain.model.PlantInventoryEntry;
 import com.rentit.inventory.domain.model.PlantInventoryItem;
@@ -10,6 +13,7 @@ import com.rentit.inventory.domain.repository.InventoryRepository;
 import com.rentit.inventory.domain.repository.PlantReservationRepository;
 import com.rentit.inventory.infrastructure.InventoryIdentifierFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -17,6 +21,10 @@ import java.util.List;
 
 @Service
 public class InventoryService {
+    @Value("maintenanceURL")
+    String maintenanceURL;
+
+
     @Autowired
     InventoryRepository inventoryRepository;
     @Autowired
@@ -40,6 +48,19 @@ public class InventoryService {
         List<PlantInventoryItem> items = inventoryRepository.findAvailableInventoryItems(plantInventoryEntry, schedule.getStartDate(), schedule.getEndDate());
         if (items.size() == 0)
             throw new PlantNotFoundException("Requested plant is unavailable");
+
+        boolean isThereAnyAvailablePlantFromMaintenance = items.parallelStream().anyMatch(item-> {
+            try {
+                List<MaintenanceTaskDTO> futureTasks = Unirest.get(maintenanceURL+item.getId()).asObject(List.class).getBody();
+                    return futureTasks.stream().anyMatch(task -> !task.getBusinessPeriod().isIntersectingWith(schedule));
+            } catch (UnirestException e) {
+                e.printStackTrace();
+                return false;
+            }
+        });
+        if(!isThereAnyAvailablePlantFromMaintenance)      {
+            throw new PlantNotFoundException("Requested plant is unavailable");
+        }
 
         PlantReservation plantReservation = PlantReservation.of(identifierFactory.nextPlantInventoryEntryID(), items.get(0), schedule);
         plantReservationRepository.save(plantReservation);

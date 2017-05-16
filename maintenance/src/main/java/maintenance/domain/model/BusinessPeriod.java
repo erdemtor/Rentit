@@ -1,4 +1,4 @@
-package com.rentit.common.domain.model;
+package maintenance.domain.model;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -8,8 +8,6 @@ import lombok.Value;
 import javax.persistence.Embeddable;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-import java.util.stream.Stream;
 
 @Embeddable
 @Value
@@ -34,7 +32,6 @@ public class BusinessPeriod {
     private boolean isWeekend(LocalDate date){
        return  (date.getDayOfWeek().equals(DayOfWeek.SATURDAY) || date.getDayOfWeek().equals(DayOfWeek.SUNDAY));
     }
-    public boolean isIntersectingWith(BusinessPeriod other){
-        return  !(this.getStartDate().isAfter(other.getEndDate()) || other.getStartDate().isAfter(this.getEndDate()));
-    }
+
+
 }
