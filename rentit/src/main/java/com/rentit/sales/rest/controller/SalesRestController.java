@@ -7,6 +7,8 @@ import com.rentit.common.application.exceptions.PurchaseOrderRejectionPeriodExce
 import com.rentit.inventory.domain.model.PlantInventoryEntry;
 import com.rentit.sales.application.dto.PurchaseOrderDTO;
 import com.rentit.sales.application.service.SalesService;
+import com.rentit.sales.domain.model.POStatus;
+import com.rentit.sales.domain.model.PurchaseOrder;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -85,4 +87,11 @@ public class SalesRestController {
         map.put("message", ex.getMessage());
         return String.valueOf(new JSONObject(map));
     }
+
+    @PostMapping("/{id}/updatestatus")
+    public PurchaseOrder updateStatus(@PathVariable String id, @RequestParam POStatus status) throws PurchaseOrderNotFoundException {
+        return salesService.updateStatus(id, status);
+    }
+
+
 }

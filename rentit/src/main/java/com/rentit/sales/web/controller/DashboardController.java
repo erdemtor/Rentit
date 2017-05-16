@@ -59,11 +59,7 @@ public class DashboardController {
         return "redirect:/dashboard/orders/" + purchaseOrderDTO.get_id();
     }
 
-    @GetMapping("/orders/{id}/updatestatus")
-    public String updateStatus(Model model, @PathVariable String id, @RequestParam POStatus status) throws PurchaseOrderNotFoundException {
-        salesService.updateStatus(id, status);
-        return "redirect:/dashboard/orders/"+id;
-    }
+
 
     @GetMapping("/orders/{id}")
     public String showPurchaseOrder(Model model, @PathVariable String id) throws PurchaseOrderNotFoundException {
