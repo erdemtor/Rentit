@@ -17,12 +17,25 @@ public class MaintenanceController {
     @Autowired
     MaintenanceService maintenanceService;
 
-    @PostMapping
+    @PostMapping("/")
     MaintenanceTaskDTO createTask(@RequestBody MaintenanceTaskDTO task){
+
        return maintenanceService.createTask(task);
     }
 
-    @GetMapping("/{plantId}")
+    @GetMapping("/{taskId}")
+    MaintenanceTaskDTO findTask(@PathVariable String taskId){
+        return maintenanceService.findTask(taskId);
+    }
+
+    @GetMapping("/task")
+    List<MaintenanceTaskDTO> findTask(){
+        return maintenanceService.findAll();
+    }
+
+
+
+    @GetMapping("/plants/{plantId}")
     List<MaintenanceTaskDTO> getPlantsTasks(@PathVariable String plantId){
         return maintenanceService.queryTasks(plantId);
     }

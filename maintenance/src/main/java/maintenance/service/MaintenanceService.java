@@ -44,4 +44,12 @@ public class MaintenanceService {
                 .map(assembler::toResource)
                 .collect(toList());
     }
+
+    public MaintenanceTaskDTO findTask(String taskId) {
+        return assembler.toResource(repo.findOne(taskId));
+    }
+
+    public List<MaintenanceTaskDTO> findAll() {
+        return assembler.toResources(repo.findAll());
+    }
 }

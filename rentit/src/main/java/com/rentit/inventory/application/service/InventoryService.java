@@ -23,8 +23,6 @@ import java.util.List;
 public class InventoryService {
     @Value("maintenanceURL")
     String maintenanceURL;
-
-
     @Autowired
     InventoryRepository inventoryRepository;
     @Autowired

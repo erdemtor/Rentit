@@ -18,8 +18,9 @@ public class MaintenanceTaskAssembler extends ResourceAssemblerSupport<Maintenan
     @Override
     public MaintenanceTaskDTO toResource(MaintenanceTask maintenanceTask) {
         MaintenanceTaskDTO dto = createResourceWithId(maintenanceTask.getId(), maintenanceTask);
-        maintenanceTask.setItemId(maintenanceTask.getItemId());
-        maintenanceTask.setPeriod(maintenanceTask.getPeriod());
+        dto.set_id(maintenanceTask.getId());
+        dto.setItemId(maintenanceTask.getItemId());
+        dto.setBusinessPeriod(maintenanceTask.getPeriod());
         return dto;
     }
 }
