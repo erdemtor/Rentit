@@ -4,11 +4,10 @@ import com.rentit.common.application.exceptions.PlantInventoryEntryNotAvailableE
 import com.rentit.common.application.exceptions.PlantNotFoundException;
 import com.rentit.common.application.exceptions.PurchaseOrderNotFoundException;
 import com.rentit.common.application.exceptions.PurchaseOrderRejectionPeriodException;
-import com.rentit.inventory.domain.model.PlantInventoryEntry;
+import com.rentit.inventory.application.dto.PlantInventoryEntryDTO;
 import com.rentit.sales.application.dto.PurchaseOrderDTO;
 import com.rentit.sales.application.service.SalesService;
 import com.rentit.sales.domain.model.POStatus;
-import com.rentit.sales.domain.model.PurchaseOrder;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -46,7 +45,7 @@ public class SalesRestController {
     }
 
     @GetMapping("/on")
-    public List<PlantInventoryEntry> getPurchaseOrderByStartDate(@RequestParam(name = "startDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Optional<LocalDate> startDate) throws Exception {
+    public List<PlantInventoryEntryDTO> getPurchaseOrderByStartDate(@RequestParam(name = "startDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Optional<LocalDate> startDate) throws Exception {
         return salesService.findToBeDispatchedOn(startDate.orElse(LocalDate.now()));
     }
 
@@ -89,7 +88,7 @@ public class SalesRestController {
     }
 
     @PostMapping("/{id}/updatestatus")
-    public PurchaseOrder updateStatus(@PathVariable String id, @RequestParam POStatus status) throws PurchaseOrderNotFoundException {
+    public PurchaseOrderDTO updateStatus(@PathVariable String id, @RequestParam POStatus status) throws PurchaseOrderNotFoundException {
         return salesService.updateStatus(id, status);
     }
 

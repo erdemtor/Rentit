@@ -5,9 +5,10 @@ import com.rentit.common.application.exceptions.PlantNotFoundException;
 import com.rentit.common.application.exceptions.PurchaseOrderNotFoundException;
 import com.rentit.common.application.exceptions.PurchaseOrderRejectionPeriodException;
 import com.rentit.common.domain.model.BusinessPeriod;
+import com.rentit.inventory.application.dto.PlantInventoryEntryDTO;
 import com.rentit.inventory.application.service.InventoryService;
+import com.rentit.inventory.application.service.PlantInventoryEntryAssembler;
 import com.rentit.inventory.domain.model.PlantInventoryEntry;
-import com.rentit.inventory.domain.model.PlantInventoryItem;
 import com.rentit.inventory.domain.model.PlantReservation;
 import com.rentit.inventory.domain.repository.PlantInventoryEntryRepository;
 import com.rentit.sales.application.dto.PurchaseOrderDTO;
@@ -35,6 +36,9 @@ public class SalesService {
     InventoryService inventoryService;
     @Autowired
     SalesIdentifierFactory identifierFactory;
+
+    @Autowired
+    PlantInventoryEntryAssembler plantInventoryEntryAssembler;
 
 
     public PurchaseOrderDTO createPurchaseOrder(PurchaseOrderDTO purchaseOrderDTO) throws PlantNotFoundException {
@@ -90,11 +94,11 @@ public class SalesService {
 
     }
 
-    public PurchaseOrder updateStatus(String id, POStatus status) throws PurchaseOrderNotFoundException {
+    public PurchaseOrderDTO updateStatus(String id, POStatus status) throws PurchaseOrderNotFoundException {
         PurchaseOrder po = purchaseOrderRepository.findOne(id);
         if(po == null) throw new PurchaseOrderNotFoundException(id);
         po.updateStatus(status);
-        return purchaseOrderRepository.save(po);
+        return purchaseOrderAssembler.toResource(purchaseOrderRepository.save(po));
     }
 
     public PurchaseOrderDTO updateRentalPeriod(String purchaseOrderId, LocalDate startDate, LocalDate endDate) throws PurchaseOrderNotFoundException, PlantInventoryEntryNotAvailableException {
@@ -104,7 +108,7 @@ public class SalesService {
         return purchaseOrderAssembler.toResource(purchaseOrderRepository.save(purchaseOrder.updateRentalPeriod(startDate, endDate)));
     }
 
-    public List<PlantInventoryEntry> findToBeDispatchedOn(LocalDate startDate) {
-            return purchaseOrderRepository.findToBeDispatchedOn(startDate);
+    public List<PlantInventoryEntryDTO> findToBeDispatchedOn(LocalDate startDate) {
+            return plantInventoryEntryAssembler.toResources(purchaseOrderRepository.findToBeDispatchedOn(startDate));
     }
 }
