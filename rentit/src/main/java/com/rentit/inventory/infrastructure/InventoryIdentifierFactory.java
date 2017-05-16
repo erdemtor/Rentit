@@ -7,6 +7,6 @@ import java.util.UUID;
 @Service
 public class InventoryIdentifierFactory {
     public String nextPlantInventoryEntryID() {
-        return UUID.randomUUID().toString();
+        return UUID.randomUUID().toString().substring(0,5);
     }
 }

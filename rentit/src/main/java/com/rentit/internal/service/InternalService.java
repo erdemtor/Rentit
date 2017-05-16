@@ -3,7 +3,7 @@ package com.rentit.internal.service;
 import com.rentit.common.application.exceptions.PurchaseOrderNotFoundException;
 import com.rentit.inventory.application.dto.PlantInventoryEntryDTO;
 import com.rentit.inventory.application.service.PlantInventoryEntryAssembler;
-import com.rentit.invoicing.service.InvoicingService;
+import com.rentit.invoicing.application.service.InvoicingService;
 import com.rentit.sales.application.dto.PurchaseOrderDTO;
 import com.rentit.sales.application.service.PurchaseOrderAssembler;
 import com.rentit.sales.domain.model.POStatus;
