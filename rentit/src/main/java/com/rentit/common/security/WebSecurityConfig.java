@@ -3,6 +3,7 @@ package com.rentit.common.security;
 /**
  * Created by erdem on 8.05.17.
  */
+import com.rentit.invoicing.domain.models.Customer;
 import com.rentit.invoicing.domain.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -24,8 +25,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.OPTIONS, "/api/**").permitAll()
-                .antMatchers("/api/internal/**").authenticated()
+                .antMatchers(HttpMethod.OPTIONS, "/api/sales/**").hasRole("customer")
+                .antMatchers("/api/internal/**").hasRole("employee")
                 .and().httpBasic()
                 .authenticationEntryPoint((req,res,exc) ->
                         res.sendError(HttpServletResponse.SC_UNAUTHORIZED, "You don't have anything to see here"));
@@ -34,9 +35,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder builder) throws Exception {
-        builder.inMemoryAuthentication()
-                .withUser("depot").password("depot").roles("DEPOT")
-                .and()
-                .withUser("main").password("main").roles("MAINTENANCE");
+        Customer customer = customerRepository.findAll().get(0);
+        builder.inMemoryAuthentication().withUser(customer.getEmail()).password(customer.getPassword()).roles("customer")
+                .and().withUser("erdem").password("erdem").roles("employee");
+
     }
 }
