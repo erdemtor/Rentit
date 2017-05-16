@@ -30,7 +30,10 @@ public class InvoicingService {
 
     public void sendInvoice(String purchaseOrderId) {
         PurchaseOrder purchaseOrder = purchaseOrderRepository.findOne(purchaseOrderId);
-        Invoice invoice = Invoice.of(new InventoryIdentifierFactory().nextPlantInventoryEntryID(), purchaseOrder, SENT, LocalDate.now().plusWeeks(3));
+        Invoice invoice = Invoice.of(new InventoryIdentifierFactory().nextPlantInventoryEntryID(),
+                purchaseOrder,
+                SENT,
+                LocalDate.now().plusDays(14));
         invoiceRepository.save(invoice);
         InvoiceDTO invoiceDTO = invoiceAssembler.toResource(invoice);
         Unirest.post(purchaseOrder.getCustomer().getBase_url()+ "/api/invoicing/invoice").body(invoiceDTO);
@@ -38,5 +41,11 @@ public class InvoicingService {
 
     public InvoiceDTO findInvoice(String id) {
         return invoiceAssembler.toResource(invoiceRepository.findOne(id));
+    }
+
+    public void sendReminder(Invoice invoice) {
+        Unirest
+                .post(invoice.getPurchaseOrder().getCustomer().getBase_url()+ "/api/invoicing/invoice")
+                .body(invoiceAssembler.toResource(invoice));
     }
 }
