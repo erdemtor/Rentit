@@ -3,8 +3,10 @@ package maintenance.controller;
 import maintenance.domain.dto.MaintenanceTaskDTO;
 import maintenance.service.MaintenanceService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -36,7 +38,9 @@ public class MaintenanceController {
 
 
     @GetMapping("/plants/{plantId}")
-    List<MaintenanceTaskDTO> getPlantsTasks(@PathVariable String plantId){
-        return maintenanceService.queryTasks(plantId);
+    boolean getPlantsTasks(@PathVariable String plantId,
+                                            @RequestParam(name = "startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+                                            @RequestParam(name = "endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+        return maintenanceService.isAvailable(plantId, startDate, endDate);
     }
 }

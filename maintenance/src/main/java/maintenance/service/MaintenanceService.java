@@ -1,9 +1,11 @@
 package maintenance.service;
 
 import maintenance.domain.dto.MaintenanceTaskDTO;
+import maintenance.domain.model.BusinessPeriod;
 import maintenance.domain.model.MaintenanceTask;
 import maintenance.domain.repository.MaintenanceTaskRepository;
 import maintenance.infrastructure.IDGenerator;
+import org.apache.tomcat.jni.Local;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -37,12 +39,11 @@ public class MaintenanceService {
 
     }
 
-    public List<MaintenanceTaskDTO> queryTasks(String plantId) {
-      return  repo.findAllByItemId(plantId)
+    public boolean isAvailable(String plantId, LocalDate startDate, LocalDate endDate) {
+        BusinessPeriod schedule = BusinessPeriod.of(startDate, endDate);
+        return  !repo.findAllByItemId(plantId)
                 .stream()
-                .filter(maintenanceTask -> maintenanceTask.getPeriod().getEndDate().isAfter(LocalDate.now()))
-                .map(assembler::toResource)
-                .collect(toList());
+                .anyMatch(maintenanceTask -> maintenanceTask.getPeriod().isIntersectingWith(schedule));
     }
 
     public MaintenanceTaskDTO findTask(String taskId) {

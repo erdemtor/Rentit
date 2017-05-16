@@ -4,6 +4,7 @@ import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.rentit.common.application.exceptions.PlantNotFoundException;
 import com.rentit.common.domain.model.BusinessPeriod;
+import com.rentit.common.service.MaintenanceService;
 import com.rentit.inventory.application.dto.MaintenanceTaskDTO;
 import com.rentit.inventory.application.dto.PlantInventoryEntryDTO;
 import com.rentit.inventory.domain.model.PlantInventoryEntry;
@@ -27,6 +28,8 @@ public class InventoryService {
     InventoryRepository inventoryRepository;
     @Autowired
     PlantReservationRepository plantReservationRepository;
+    @Autowired
+    MaintenanceService maintenanceService;
 
     @Autowired
     PlantInventoryEntryAssembler plantInventoryEntryAssembler;
@@ -47,15 +50,7 @@ public class InventoryService {
         if (items.size() == 0)
             throw new PlantNotFoundException("Requested plant is unavailable");
 
-        boolean isThereAnyAvailablePlantFromMaintenance = items.parallelStream().anyMatch(item-> {
-            try {
-                List<MaintenanceTaskDTO> futureTasks = Unirest.get(maintenanceURL+item.getId()).asObject(List.class).getBody();
-                    return futureTasks.stream().anyMatch(task -> !task.getBusinessPeriod().isIntersectingWith(schedule));
-            } catch (UnirestException e) {
-                e.printStackTrace();
-                return false;
-            }
-        });
+        boolean isThereAnyAvailablePlantFromMaintenance = maintenanceService.isAvailable(items, schedule);
         if(!isThereAnyAvailablePlantFromMaintenance)      {
             throw new PlantNotFoundException("Requested plant is unavailable");
         }
