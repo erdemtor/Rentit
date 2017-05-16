@@ -1,6 +1,7 @@
 package com.rentit.inventory.domain.repository;
 
 import com.rentit.inventory.domain.model.PlantInventoryEntry;
+import com.rentit.sales.domain.model.PurchaseOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.EntityManager;

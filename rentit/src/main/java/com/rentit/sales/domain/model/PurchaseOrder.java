@@ -3,6 +3,7 @@ package com.rentit.sales.domain.model;
 import com.rentit.common.domain.model.BusinessPeriod;
 import com.rentit.inventory.domain.model.PlantInventoryEntry;
 import com.rentit.inventory.domain.model.PlantReservation;
+import com.rentit.invoicing.domain.models.Customer;
 import lombok.*;
 
 import javax.persistence.*;
@@ -23,6 +24,9 @@ public class PurchaseOrder {
     @Embedded
     BusinessPeriod rentalPeriod;
 
+    @ManyToOne
+    Customer customer;
+
     @OneToMany
     List<PlantReservation> plantReservations = new ArrayList<>();
 
@@ -32,12 +36,13 @@ public class PurchaseOrder {
     @Column(precision = 8, scale = 2)
     BigDecimal total;
 
-    public static PurchaseOrder of(String id, PlantInventoryEntry plant, BusinessPeriod rentalPeriod) {
+    public static PurchaseOrder of(String id, PlantInventoryEntry plant, BusinessPeriod rentalPeriod, Customer customer) {
         PurchaseOrder po = new PurchaseOrder();
         po.id = id;
         po.plant = plant;
         po.rentalPeriod = rentalPeriod;
         po.status = POStatus.CREATED;
+        po.customer = customer;
         return po;
     }
 

@@ -12,6 +12,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -27,7 +28,7 @@ public class SalesRestController {
 
     @PostMapping
     public ResponseEntity<PurchaseOrderDTO> createPurchaseOrder(@RequestBody PurchaseOrderDTO poDTO) throws Exception {
-        poDTO = salesService.createPurchaseOrder(poDTO);
+        poDTO = salesService.createPurchaseOrder(poDTO, SecurityContextHolder.getContext().getAuthentication().getName());
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(new URI(poDTO.getId().getHref()));
         return new ResponseEntity<>(poDTO, headers, HttpStatus.CREATED);
@@ -35,9 +36,8 @@ public class SalesRestController {
 
     @PostMapping("/{id}")
     public PurchaseOrderDTO modifyPurchaseOrder(@PathVariable String id,
-                                                @RequestParam(name = "startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
                                                 @RequestParam(name = "endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) throws Exception {
-        return salesService.updateRentalPeriod(id, startDate, endDate);
+        return salesService.updateRentalPeriod(id, endDate);
     }
 
 

@@ -52,13 +52,6 @@ public class DashboardController {
         return "dashboard/catalog/query-result";
     }
 
-    @PostMapping("/orders")
-    public String createPurchaseOrder(Model model, PurchaseOrderDTO purchaseOrderDTO) throws PlantNotFoundException {
-        purchaseOrderDTO = salesService.createPurchaseOrder(purchaseOrderDTO);
-        model.addAttribute("po", purchaseOrderDTO);
-        return "redirect:/dashboard/orders/" + purchaseOrderDTO.get_id();
-    }
-
 
 
     @GetMapping("/orders/{id}")

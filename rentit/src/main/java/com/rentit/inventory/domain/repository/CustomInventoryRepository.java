@@ -12,4 +12,5 @@ public interface CustomInventoryRepository {
     List<PlantInventoryEntry> findAvailable(String name, LocalDate startDate, LocalDate endDate);
 
     boolean isAvailable(String id, LocalDate startDate, LocalDate endDate);
+
 }

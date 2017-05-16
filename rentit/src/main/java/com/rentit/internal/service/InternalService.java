@@ -2,15 +2,13 @@ package com.rentit.internal.service;
 
 import com.rentit.common.application.exceptions.PurchaseOrderNotFoundException;
 import com.rentit.inventory.application.dto.PlantInventoryEntryDTO;
-import com.rentit.inventory.application.service.InventoryService;
 import com.rentit.inventory.application.service.PlantInventoryEntryAssembler;
-import com.rentit.inventory.domain.repository.PlantInventoryEntryRepository;
+import com.rentit.invoicing.service.InvoicingService;
 import com.rentit.sales.application.dto.PurchaseOrderDTO;
 import com.rentit.sales.application.service.PurchaseOrderAssembler;
 import com.rentit.sales.domain.model.POStatus;
 import com.rentit.sales.domain.model.PurchaseOrder;
 import com.rentit.sales.domain.repository.PurchaseOrderRepository;
-import com.rentit.sales.infrastructure.SalesIdentifierFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +25,9 @@ public class InternalService {
     PurchaseOrderRepository purchaseOrderRepository;
     @Autowired
     PurchaseOrderAssembler purchaseOrderAssembler;
+    @Autowired
+    InvoicingService invoicingService;
+
 
     @Autowired
     PlantInventoryEntryAssembler plantInventoryEntryAssembler;
@@ -43,5 +44,11 @@ public class InternalService {
 
     public List<PurchaseOrderDTO> findAllPurchaseOrders() {
         return purchaseOrderAssembler.toResources(purchaseOrderRepository.findAll());
+    }
+
+    public PurchaseOrderDTO handleReturned(String purchaseOrderId) throws PurchaseOrderNotFoundException {
+        invoicingService.sendInvoice(purchaseOrderId);
+        return this.updateStatus(purchaseOrderId, POStatus.PLANT_RETURNED);
+
     }
 }

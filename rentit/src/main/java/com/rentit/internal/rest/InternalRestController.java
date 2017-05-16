@@ -39,9 +39,9 @@ public class InternalRestController {
         return internalService.updateStatus(id, DISPATCHED);
     }
 
-    @PostMapping("/{id}/returned")
-    public PurchaseOrderDTO updateStatus(@PathVariable String id) throws PurchaseOrderNotFoundException {
-        return internalService.updateStatus(id, PLANT_RETURNED);
+    @PostMapping("/{purchaseOrderId}/returned")
+    public PurchaseOrderDTO updateStatus(@PathVariable String purchaseOrderId) throws PurchaseOrderNotFoundException {
+        return internalService.handleReturned(purchaseOrderId);
     }
 
     @GetMapping("/on")
