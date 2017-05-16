@@ -48,4 +48,8 @@ public class InvoicingService {
                 .post(invoice.getPurchaseOrder().getCustomer().getBase_url()+ "/api/invoicing/invoice")
                 .body(invoiceAssembler.toResource(invoice));
     }
+
+    public InvoiceDTO payInvoice(String invoiceId) {
+        return invoiceAssembler.toResource(invoiceRepository.save(invoiceRepository.findOne(invoiceId).setPaid()));
+    }
 }
