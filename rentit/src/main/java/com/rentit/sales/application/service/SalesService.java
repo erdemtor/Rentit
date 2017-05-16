@@ -5,14 +5,11 @@ import com.rentit.common.application.exceptions.PlantNotFoundException;
 import com.rentit.common.application.exceptions.PurchaseOrderNotFoundException;
 import com.rentit.common.application.exceptions.PurchaseOrderRejectionPeriodException;
 import com.rentit.common.domain.model.BusinessPeriod;
-import com.rentit.inventory.application.dto.PlantInventoryEntryDTO;
 import com.rentit.inventory.application.service.InventoryService;
-import com.rentit.inventory.application.service.PlantInventoryEntryAssembler;
 import com.rentit.inventory.domain.model.PlantInventoryEntry;
 import com.rentit.inventory.domain.model.PlantReservation;
 import com.rentit.inventory.domain.repository.PlantInventoryEntryRepository;
 import com.rentit.sales.application.dto.PurchaseOrderDTO;
-import com.rentit.sales.domain.model.POStatus;
 import com.rentit.sales.domain.model.PurchaseOrder;
 import com.rentit.sales.domain.repository.PurchaseOrderRepository;
 import com.rentit.sales.infrastructure.SalesIdentifierFactory;
@@ -37,19 +34,12 @@ public class SalesService {
     @Autowired
     SalesIdentifierFactory identifierFactory;
 
-    @Autowired
-    PlantInventoryEntryAssembler plantInventoryEntryAssembler;
-
 
     public PurchaseOrderDTO createPurchaseOrder(PurchaseOrderDTO purchaseOrderDTO) throws PlantNotFoundException {
         PlantInventoryEntry plantInventoryEntry = plantInventoryEntryRepository.findOne(purchaseOrderDTO.getPlant().get_id());
-        if(plantInventoryEntry == null) throw new PlantNotFoundException("No such plantInventoryEntry with the id: "+ purchaseOrderDTO.getPlant().get_id());
+        if(plantInventoryEntry == null) throw new PlantNotFoundException(purchaseOrderDTO.getPlant().get_id());
         BusinessPeriod rentalPeriod = BusinessPeriod.of(purchaseOrderDTO.getRentalPeriod().getStartDate(), purchaseOrderDTO.getRentalPeriod().getEndDate());
-
-        PurchaseOrder po = PurchaseOrder.of(identifierFactory.nextPurchaseOrderID(),
-                                            plantInventoryEntry,
-                                            rentalPeriod);
-
+        PurchaseOrder po = PurchaseOrder.of(identifierFactory.nextPurchaseOrderID(), plantInventoryEntry, rentalPeriod);
         po = purchaseOrderRepository.save(po);
         try {
             PlantReservation plantReservation = inventoryService.createPlantReservation(plantInventoryEntry, rentalPeriod);
@@ -94,12 +84,6 @@ public class SalesService {
 
     }
 
-    public PurchaseOrderDTO updateStatus(String id, POStatus status) throws PurchaseOrderNotFoundException {
-        PurchaseOrder po = purchaseOrderRepository.findOne(id);
-        if(po == null) throw new PurchaseOrderNotFoundException(id);
-        po.updateStatus(status);
-        return purchaseOrderAssembler.toResource(purchaseOrderRepository.save(po));
-    }
 
     public PurchaseOrderDTO updateRentalPeriod(String purchaseOrderId, LocalDate startDate, LocalDate endDate) throws PurchaseOrderNotFoundException, PlantInventoryEntryNotAvailableException {
         PurchaseOrder purchaseOrder = purchaseOrderRepository.findOne(purchaseOrderId);
@@ -108,7 +92,5 @@ public class SalesService {
         return purchaseOrderAssembler.toResource(purchaseOrderRepository.save(purchaseOrder.updateRentalPeriod(startDate, endDate)));
     }
 
-    public List<PlantInventoryEntryDTO> findToBeDispatchedOn(LocalDate startDate) {
-            return plantInventoryEntryAssembler.toResources(purchaseOrderRepository.findToBeDispatchedOn(startDate));
-    }
+
 }

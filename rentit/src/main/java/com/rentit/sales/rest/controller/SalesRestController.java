@@ -4,10 +4,8 @@ import com.rentit.common.application.exceptions.PlantInventoryEntryNotAvailableE
 import com.rentit.common.application.exceptions.PlantNotFoundException;
 import com.rentit.common.application.exceptions.PurchaseOrderNotFoundException;
 import com.rentit.common.application.exceptions.PurchaseOrderRejectionPeriodException;
-import com.rentit.inventory.application.dto.PlantInventoryEntryDTO;
 import com.rentit.sales.application.dto.PurchaseOrderDTO;
 import com.rentit.sales.application.service.SalesService;
-import com.rentit.sales.domain.model.POStatus;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -19,9 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.time.LocalDate;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/sales/orders")
@@ -44,16 +40,7 @@ public class SalesRestController {
         return salesService.updateRentalPeriod(id, startDate, endDate);
     }
 
-    @GetMapping("/on")
-    public List<PlantInventoryEntryDTO> getPurchaseOrderByStartDate(@RequestParam(name = "startDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Optional<LocalDate> startDate) throws Exception {
-        return salesService.findToBeDispatchedOn(startDate.orElse(LocalDate.now()));
-    }
 
-
-    @GetMapping
-    public List<PurchaseOrderDTO> getAllPurchaseOrders() throws Exception {
-        return salesService.findAll();
-    }
 
     @GetMapping("/{id}")
     public PurchaseOrderDTO showPurchaseOrder(@PathVariable String id) throws Exception {
@@ -87,10 +74,6 @@ public class SalesRestController {
         return String.valueOf(new JSONObject(map));
     }
 
-    @PostMapping("/{id}/updatestatus")
-    public PurchaseOrderDTO updateStatus(@PathVariable String id, @RequestParam POStatus status) throws PurchaseOrderNotFoundException {
-        return salesService.updateStatus(id, status);
-    }
 
 
 }
