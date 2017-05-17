@@ -11,27 +11,29 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
+@PreAuthorize("hasRole('ROLE_customer')")
 @RequestMapping("/api/sales/orders")
 public class SalesRestController {
     @Autowired
     SalesService salesService;
 
     @PostMapping
-    public ResponseEntity<PurchaseOrderDTO> createPurchaseOrder(@RequestBody PurchaseOrderDTO poDTO) throws Exception {
+    public PurchaseOrderDTO createPurchaseOrder(@RequestBody PurchaseOrderDTO poDTO) throws Exception {
         poDTO = salesService.createPurchaseOrder(poDTO, SecurityContextHolder.getContext().getAuthentication().getName());
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(new URI(poDTO.getId().getHref()));
-        return new ResponseEntity<>(poDTO, headers, HttpStatus.CREATED);
+        return poDTO;
     }
 
     @PostMapping("/{id}")
@@ -40,7 +42,10 @@ public class SalesRestController {
         return salesService.updateRentalPeriod(id, endDate);
     }
 
-
+    @GetMapping
+    public List<PurchaseOrderDTO> findAllPurchaseOrders() throws Exception {
+       return salesService.findAll();
+    }
 
     @GetMapping("/{id}")
     public PurchaseOrderDTO showPurchaseOrder(@PathVariable String id) throws Exception {

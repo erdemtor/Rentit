@@ -1,18 +1,16 @@
 package com.rentit.internal.rest;
 
-import com.rentit.common.application.exceptions.PlantInventoryEntryNotAvailableException;
 import com.rentit.common.application.exceptions.PlantNotFoundException;
 import com.rentit.common.application.exceptions.PurchaseOrderNotFoundException;
 import com.rentit.common.application.exceptions.PurchaseOrderRejectionPeriodException;
 import com.rentit.internal.service.InternalService;
 import com.rentit.inventory.application.dto.PlantInventoryEntryDTO;
 import com.rentit.sales.application.dto.PurchaseOrderDTO;
-import com.rentit.sales.application.service.SalesService;
-import com.rentit.sales.domain.model.POStatus;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,13 +21,13 @@ import java.util.Map;
 import java.util.Optional;
 
 import static com.rentit.sales.domain.model.POStatus.DISPATCHED;
-import static com.rentit.sales.domain.model.POStatus.PLANT_RETURNED;
 
 /**
  * Created by erdem on 16.05.17.
  */
 
 @Controller
+@PreAuthorize("hasRole('ROLE_employee')")
 @RequestMapping("/api/internal/orders/")
 public class InternalRestController {
     @Autowired
