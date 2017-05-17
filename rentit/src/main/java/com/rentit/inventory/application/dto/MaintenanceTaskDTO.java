@@ -1,8 +1,9 @@
 package com.rentit.inventory.application.dto;
 
 import com.rentit.common.domain.model.BusinessPeriod;
+import com.rentit.common.rest.ResourceSupport;
 import lombok.Data;
-import org.springframework.hateoas.ResourceSupport;
+
 
 /**
  * Created by erdem on 16.05.17.
