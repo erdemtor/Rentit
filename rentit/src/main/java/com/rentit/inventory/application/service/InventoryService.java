@@ -63,4 +63,6 @@ public class InventoryService {
     public PlantInventoryEntryDTO findPlant(String id) {
         return plantInventoryEntryAssembler.toResource(inventoryRepository.findOne(id));
     }
+
+
 }

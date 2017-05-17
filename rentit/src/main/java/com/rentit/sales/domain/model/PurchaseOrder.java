@@ -27,8 +27,8 @@ public class PurchaseOrder {
     @ManyToOne
     Customer customer;
 
-    @OneToMany
-    List<PlantReservation> plantReservations = new ArrayList<>();
+    @OneToOne
+    PlantReservation plantReservation;
 
     @Enumerated(EnumType.STRING)
     POStatus status;
@@ -47,10 +47,13 @@ public class PurchaseOrder {
     }
 
     public void confirmReservation(PlantReservation plantReservation, BigDecimal price) {
-        plantReservations.add(plantReservation);
+        this.plantReservation = plantReservation;
         long workingDays = rentalPeriod.numberOfWorkingDays();
         total = price.multiply(BigDecimal.valueOf(workingDays));
         status = POStatus.ACCEPTED;
+    }
+    public void confirmReservation(PlantReservation plantReservation) {
+      this.confirmReservation(plantReservation, this.plant.getPrice());
     }
 
     public void handleRejection() {
@@ -74,7 +77,9 @@ public class PurchaseOrder {
     }
 
     public PurchaseOrder updateRentalPeriod(LocalDate startDate, LocalDate endDate) {
+        this.getPlantReservation().setSchedule(BusinessPeriod.of(startDate, endDate));
         this.rentalPeriod = BusinessPeriod.of(startDate, endDate);
+        this.confirmReservation(this.getPlantReservation());
         return this;
     }
 }

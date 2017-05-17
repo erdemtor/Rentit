@@ -54,7 +54,7 @@ public class PurchaseOrderAssembler extends ResourceAssemblerSupport<PurchaseOrd
                     dto.add(new ExtendedLink(
                             ControllerLinkBuilder.linkTo(methodOn(SalesRestController.class)
                                     .modifyPurchaseOrder(dto.get_id(),null)).toString(),
-                            "extend", PATCH));
+                            "extend", POST));
                 default:
                     break;
             }

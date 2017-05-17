@@ -15,6 +15,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import retrofit.http.PATCH;
+import retrofit.http.POST;
 
 import java.net.URI;
 import java.time.LocalDate;
@@ -37,7 +38,7 @@ public class SalesRestController {
         return poDTO;
     }
 
-    @PatchMapping("/{id}")
+    @PostMapping("/{id}")
     public PurchaseOrderDTO modifyPurchaseOrder(@PathVariable String id,
                                                 @RequestParam(name = "endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) throws Exception {
         return salesService.updateRentalPeriod(id, endDate);

@@ -9,6 +9,7 @@ import com.rentit.inventory.application.service.InventoryService;
 import com.rentit.inventory.domain.model.PlantInventoryEntry;
 import com.rentit.inventory.domain.model.PlantReservation;
 import com.rentit.inventory.domain.repository.PlantInventoryEntryRepository;
+import com.rentit.inventory.domain.repository.PlantReservationRepository;
 import com.rentit.invoicing.domain.models.Customer;
 import com.rentit.invoicing.domain.repository.CustomerRepository;
 import com.rentit.sales.application.dto.PurchaseOrderDTO;
@@ -37,6 +38,8 @@ public class SalesService {
     SalesIdentifierFactory identifierFactory;
     @Autowired
     CustomerRepository customerRepo;
+    @Autowired
+    PlantReservationRepository plantReservationRepository;
 
 
     public PurchaseOrderDTO createPurchaseOrder(PurchaseOrderDTO purchaseOrderDTO, String customerEmail) throws PlantNotFoundException {
@@ -90,7 +93,7 @@ public class SalesService {
     }
 
 
-    public PurchaseOrderDTO updateRentalPeriod(String purchaseOrderId, LocalDate newEndDate) throws PurchaseOrderNotFoundException, PlantInventoryEntryNotAvailableException {
+    public PurchaseOrderDTO updateRentalPeriod(String purchaseOrderId, LocalDate newEndDate) throws PurchaseOrderNotFoundException, PlantInventoryEntryNotAvailableException, PlantNotFoundException {
         PurchaseOrder purchaseOrder = purchaseOrderRepository.findOne(purchaseOrderId);
         if (purchaseOrder == null) {
             throw new PurchaseOrderNotFoundException(purchaseOrderId);
@@ -98,6 +101,7 @@ public class SalesService {
         if (!inventoryService.isAvailable(purchaseOrder.getPlant().getId(), purchaseOrder.getRentalPeriod().getEndDate(), newEndDate)) {
             throw new PlantInventoryEntryNotAvailableException(purchaseOrder.getPlant().getName(),purchaseOrder.getRentalPeriod().getStartDate(),newEndDate);
         }
+
         return purchaseOrderAssembler.toResource(purchaseOrderRepository.save(purchaseOrder.updateRentalPeriod(purchaseOrder.getRentalPeriod().getStartDate(), newEndDate)));
     }
 
