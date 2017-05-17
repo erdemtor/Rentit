@@ -4,6 +4,7 @@ import com.rentit.common.application.dto.BusinessPeriodDTO;
 import com.rentit.common.rest.ExtendedLink;
 import com.rentit.inventory.application.service.PlantInventoryEntryAssembler;
 import com.rentit.sales.application.dto.PurchaseOrderDTO;
+import com.rentit.sales.domain.model.POStatus;
 import com.rentit.sales.domain.model.PurchaseOrder;
 import com.rentit.sales.rest.controller.SalesRestController;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,24 +37,24 @@ public class PurchaseOrderAssembler extends ResourceAssemblerSupport<PurchaseOrd
         try {
             switch (dto.getStatus()) {
                 case PENDING:
-                    dto.add(new Link(
+                    dto.add(new ExtendedLink(
                             ControllerLinkBuilder.linkTo(methodOn(SalesRestController.class)
                                     .acceptPurchaseOrder(dto.get_id())).toString(),
-                            "accept"));
-                    dto.add(new Link(
+                            "accept", POST));
+                    dto.add(new ExtendedLink(
                             ControllerLinkBuilder.linkTo(methodOn(SalesRestController.class)
                                     .rejectPurchaseOrder(dto.get_id())).toString(),
-                            "reject"));
+                            "reject", DELETE));
                     break;
                 case ACCEPTED:
-                    dto.add(new Link(
+                    dto.add(new ExtendedLink(
                             ControllerLinkBuilder.linkTo(methodOn(SalesRestController.class)
                                     .closePurchaseOrder(dto.get_id())).toString(),
-                            "close"));
-                    dto.add(new Link(
+                            "close", DELETE));
+                    dto.add(new ExtendedLink(
                             ControllerLinkBuilder.linkTo(methodOn(SalesRestController.class)
                                     .modifyPurchaseOrder(dto.get_id(),null)).toString(),
-                            "extend"));
+                            "extend", PATCH));
                 default:
                     break;
             }
