@@ -7,12 +7,14 @@ import com.rentit.sales.application.dto.PurchaseOrderDTO;
 import com.rentit.sales.domain.model.PurchaseOrder;
 import com.rentit.sales.rest.controller.SalesRestController;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Service;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 import static org.springframework.http.HttpMethod.DELETE;
+import static org.springframework.http.HttpMethod.PATCH;
 import static org.springframework.http.HttpMethod.POST;
 
 @Service
@@ -34,24 +36,24 @@ public class PurchaseOrderAssembler extends ResourceAssemblerSupport<PurchaseOrd
         try {
             switch (dto.getStatus()) {
                 case PENDING:
-                    dto.add(new ExtendedLink(
+                    dto.add(new Link(
                             ControllerLinkBuilder.linkTo(methodOn(SalesRestController.class)
                                     .acceptPurchaseOrder(dto.get_id())).toString(),
-                            "accept", POST));
-                    dto.add(new ExtendedLink(
+                            "accept"));
+                    dto.add(new Link(
                             ControllerLinkBuilder.linkTo(methodOn(SalesRestController.class)
                                     .rejectPurchaseOrder(dto.get_id())).toString(),
-                            "reject", DELETE));
+                            "reject"));
                     break;
                 case ACCEPTED:
-                    dto.add(new ExtendedLink(
+                    dto.add(new Link(
                             ControllerLinkBuilder.linkTo(methodOn(SalesRestController.class)
                                     .closePurchaseOrder(dto.get_id())).toString(),
-                            "close", DELETE));
-                    dto.add(new ExtendedLink(
+                            "close"));
+                    dto.add(new Link(
                             ControllerLinkBuilder.linkTo(methodOn(SalesRestController.class)
                                     .modifyPurchaseOrder(dto.get_id(),null)).toString(),
-                            "extend", DELETE));
+                            "extend"));
                 default:
                     break;
             }
