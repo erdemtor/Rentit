@@ -50,7 +50,7 @@ public class PurchaseOrder {
         plantReservations.add(plantReservation);
         long workingDays = rentalPeriod.numberOfWorkingDays();
         total = price.multiply(BigDecimal.valueOf(workingDays));
-        status = POStatus.PENDING;
+        status = POStatus.ACCEPTED;
     }
 
     public void handleRejection() {
