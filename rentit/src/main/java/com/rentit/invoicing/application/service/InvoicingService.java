@@ -5,6 +5,7 @@ import com.rentit.inventory.infrastructure.InventoryIdentifierFactory;
 import com.rentit.invoicing.application.dto.InvoiceDTO;
 import com.rentit.invoicing.domain.models.Invoice;
 import com.rentit.invoicing.domain.repository.InvoiceRepository;
+import com.rentit.sales.domain.model.POStatus;
 import com.rentit.sales.domain.model.PurchaseOrder;
 import com.rentit.sales.domain.repository.PurchaseOrderRepository;
 import org.apache.commons.codec.binary.Base64;
@@ -18,6 +19,7 @@ import org.springframework.web.client.RestTemplate;
 import java.time.LocalDate;
 
 import static com.rentit.invoicing.domain.models.InvoiceStatus.SENT;
+import static com.rentit.sales.domain.model.POStatus.CLOSED;
 
 /**
  * Created by erdem on 16.05.17.
@@ -60,6 +62,7 @@ public class InvoicingService {
         }catch (Exception e){
             e.printStackTrace();
         }
+        purchaseOrder.updateStatus(POStatus.INVOICED);
 
     }
 
@@ -74,6 +77,7 @@ public class InvoicingService {
     }
 
     public InvoiceDTO payInvoice(String invoiceId) {
+        purchaseOrderRepository.save(invoiceRepository.findOne(invoiceId).getPurchaseOrder().updateStatus(CLOSED));
         return invoiceAssembler.toResource(invoiceRepository.save(invoiceRepository.findOne(invoiceId).setPaid()));
     }
 }

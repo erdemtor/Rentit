@@ -6,6 +6,8 @@ import com.rentit.inventory.rest.controller.InventoryRestController;
 import com.rentit.invoicing.InvoiceController;
 import com.rentit.invoicing.application.dto.InvoiceDTO;
 import com.rentit.invoicing.domain.models.Invoice;
+import com.rentit.sales.application.service.PurchaseOrderAssembler;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +16,8 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class InvoiceAssembler extends ResourceAssemblerSupport<Invoice, InvoiceDTO> {
-
+    @Autowired
+    PurchaseOrderAssembler purchaseOrderAssembler;
     public InvoiceAssembler() {
         super(InvoiceController.class, InvoiceDTO.class);
     }
@@ -25,6 +28,7 @@ public class InvoiceAssembler extends ResourceAssemblerSupport<Invoice, InvoiceD
         dto.set_id(invoice.getId());
         dto.setAmount(invoice.getPurchaseOrder().getTotal());
         dto.setDueDate(invoice.getDueDate());
+        dto.setPurchaseOrderDTO(purchaseOrderAssembler.toResource(invoice.getPurchaseOrder()));
         return dto;
     }
 }

@@ -72,8 +72,9 @@ public class PurchaseOrder {
         status = POStatus.ACCEPTED;
     }
 
-    public void updateStatus(POStatus status) {
+    public PurchaseOrder updateStatus(POStatus status) {
         this.status = status;
+        return this;
     }
 
     public PurchaseOrder updateRentalPeriod(LocalDate startDate, LocalDate endDate) {
