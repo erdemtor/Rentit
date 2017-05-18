@@ -18,6 +18,9 @@ insert into plant_inventory_entry (id, name, description, price) values (13, 'D-
 insert into plant_inventory_entry (id, name, description, price) values (14, 'D-Truck', '30 Tonne Articulating Dump Truck', 300);
 
 insert into plant_inventory_item (id, plant_info_id, serial_number, equipment_condition) values (1, 1, 'A01', 'SERVICEABLE');
+insert into plant_inventory_item (id, plant_info_id, serial_number, equipment_condition) values (2, 1, 'A02', 'SERVICEABLE');
+insert into plant_inventory_item (id, plant_info_id, serial_number, equipment_condition) values (3, 1, 'A03', 'SERVICEABLE');
+insert into plant_inventory_item (id, plant_info_id, serial_number, equipment_condition) values (4, 1, 'A04', 'SERVICEABLE');
 insert into plant_inventory_item (id, plant_info_id, serial_number, equipment_condition) values (2, 2, 'A02', 'SERVICEABLE');
 insert into plant_inventory_item (id, plant_info_id, serial_number, equipment_condition) values (3, 3, 'A03', 'UNSERVICEABLE_REPAIRABLE');
 

@@ -11,5 +11,5 @@ import java.util.List;
 @Repository
 public interface PurchaseOrderRepository extends JpaRepository<PurchaseOrder, String> {
     @Query("select p.plant from PurchaseOrder p where p.rentalPeriod.startDate =?1 and p.status = com.rentit.sales.domain.model.POStatus.ACCEPTED")
-    List<PlantInventoryEntry> findToBeDispatchedOn(LocalDate startDate);
+    List<PurchaseOrder> findToBeDispatchedOn(LocalDate startDate);
 }

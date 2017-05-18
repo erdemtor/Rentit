@@ -36,8 +36,9 @@ public class InventoryRepositoryImpl implements CustomInventoryRepository {
                 .setParameter(1, "%" + name.toLowerCase() + "%")
                 .setParameter(2, startDate)
                 .setParameter(3, endDate);
-            return query.getResultList()
+        return query.getResultList()
                     .stream()
+                    .distinct()
                     .filter(item->
                             maintenanceService.isAvailable(
                                     plantInventoryItemRepository.findAllByPlantInfo(item),

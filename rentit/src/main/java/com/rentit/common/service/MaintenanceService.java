@@ -27,9 +27,7 @@ import java.util.List;
 
 @Service
 public class MaintenanceService {
-    Type type = new TypeToken<List<MaintenanceTaskDTO>>(){}.getType();
     String maintenanceURL = "http://localhost:8888/api/maintenance/plants/";
-    com.fasterxml.jackson.databind.ObjectMapper objectMapper = new com.fasterxml.jackson.databind.ObjectMapper();
     public boolean isAvailable(List<PlantInventoryItem> items, BusinessPeriod schedule){
         return items.parallelStream().anyMatch(item-> this.isAvailable(item, schedule));
     }
@@ -37,7 +35,7 @@ public class MaintenanceService {
     public boolean isAvailable(PlantInventoryItem item, BusinessPeriod schedule) {
             String url = maintenanceURL+item.getId()+"?startDate="+schedule.getStartDate()+"&endDate="+schedule.getEndDate();
             System.out.println(url);
-        String  result = null;
+        String  result;
         try {
             result = Unirest.get(url).asString().getBody();
             return result.equals("true");
