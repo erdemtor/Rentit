@@ -43,7 +43,7 @@ public class InternalRestController {
     }
 
     @GetMapping("/on")
-    public List<PlantInventoryEntryDTO> getPurchaseOrderByStartDate(@RequestParam(name = "startDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Optional<LocalDate> startDate) throws Exception {
+    public List<PurchaseOrderDTO> getPurchaseOrderByStartDate(@RequestParam(name = "startDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Optional<LocalDate> startDate) throws Exception {
         return internalService.findToBeDispatchedOn(startDate.orElse(LocalDate.now()));
     }
 

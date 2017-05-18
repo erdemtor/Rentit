@@ -38,8 +38,8 @@ public class InternalService {
         po.updateStatus(status);
         return purchaseOrderAssembler.toResource(purchaseOrderRepository.save(po));
     }
-    public List<PlantInventoryEntryDTO> findToBeDispatchedOn(LocalDate startDate) {
-        return plantInventoryEntryAssembler.toResources(purchaseOrderRepository.findToBeDispatchedOn(startDate));
+    public List<PurchaseOrderDTO> findToBeDispatchedOn(LocalDate startDate) {
+        return purchaseOrderAssembler.toResources(purchaseOrderRepository.findToBeDispatchedOn(startDate));
     }
 
     public List<PurchaseOrderDTO> findAllPurchaseOrders() {
