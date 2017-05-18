@@ -25,7 +25,7 @@ import static com.rentit.sales.domain.model.POStatus.DISPATCHED;
 /**
  * Created by erdem on 16.05.17.
  */
-
+@CrossOrigin
 @RestController
 @PreAuthorize("hasRole('ROLE_employee')")
 @RequestMapping("/api/internal/orders/")
