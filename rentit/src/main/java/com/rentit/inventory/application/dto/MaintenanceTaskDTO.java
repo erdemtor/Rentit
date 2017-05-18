@@ -1,5 +1,6 @@
 package com.rentit.inventory.application.dto;
 
+import com.rentit.common.application.dto.BusinessPeriodDTO;
 import com.rentit.common.domain.model.BusinessPeriod;
 import com.rentit.common.rest.ResourceSupport;
 import lombok.Data;
@@ -12,5 +13,5 @@ import lombok.Data;
 public class MaintenanceTaskDTO extends ResourceSupport {
     String _id;
     String itemId;
-    BusinessPeriod businessPeriod;
+    BusinessPeriodDTO businessPeriod;
 }

@@ -7,8 +7,10 @@ import com.rentit.invoicing.domain.models.Invoice;
 import com.rentit.invoicing.domain.repository.InvoiceRepository;
 import com.rentit.sales.domain.model.PurchaseOrder;
 import com.rentit.sales.domain.repository.PurchaseOrderRepository;
+import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -40,13 +42,25 @@ public class InvoicingService {
                 LocalDate.now().plusDays(14));
         invoiceRepository.save(invoice);
         InvoiceDTO invoiceDTO = invoiceAssembler.toResource(invoice);
-        HttpEntity<InvoiceDTO> request = new HttpEntity<>(invoiceDTO);
-        restTemplate.exchange(
-                purchaseOrder.getCustomer().getBase_url()+ "/api/invoicing/invoice",
-                HttpMethod.POST,
-                request,
-                InvoiceDTO.class
-        );
+        HttpHeaders headers;
+        String plainCreds = "site" + ":" + "site";
+        byte[] plainCredsBytes = plainCreds.getBytes();
+        byte[] base64CredsBytes = Base64.encodeBase64(plainCredsBytes);
+        String base64Creds = new String(base64CredsBytes);
+        headers = new HttpHeaders();
+        headers.add("Authorization", "Basic " + base64Creds);
+        HttpEntity<?> request = new HttpEntity<>(invoiceDTO, headers);
+        try {
+            restTemplate.exchange(
+                    purchaseOrder.getCustomer().getBase_url()+ "/api/invoicing/invoice",
+                    HttpMethod.POST,
+                    request,
+                    InvoiceDTO.class
+            );
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 
     public InvoiceDTO findInvoice(String id) {

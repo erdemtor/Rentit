@@ -27,4 +27,4 @@ insert into plant_inventory_item (id, plant_info_id, serial_number, equipment_co
 insert into plant_reservation (id, plant_id, start_date, end_date) values (1, 1, '2017-05-22', '2017-05-24');
 
 
-INSERT INTO customer (id, name, email, base_url, password) VALUES (1, 'atakan', 'marqhen@gmail.com', 'localhost:8090', '123456')
+INSERT INTO customer (id, name, email, base_url, password) VALUES (1, 'atakan', 'marqhen@gmail.com', 'http://localhost:8090', '123456')
