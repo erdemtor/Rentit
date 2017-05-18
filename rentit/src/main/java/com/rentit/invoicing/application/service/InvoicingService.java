@@ -8,7 +8,10 @@ import com.rentit.invoicing.domain.repository.InvoiceRepository;
 import com.rentit.sales.domain.model.PurchaseOrder;
 import com.rentit.sales.domain.repository.PurchaseOrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
 
@@ -27,7 +30,8 @@ public class InvoicingService {
     PurchaseOrderRepository purchaseOrderRepository;
     @Autowired
     InvoiceAssembler invoiceAssembler;
-
+    @Autowired
+    private RestTemplate restTemplate;
     public void sendInvoice(String purchaseOrderId) {
         PurchaseOrder purchaseOrder = purchaseOrderRepository.findOne(purchaseOrderId);
         Invoice invoice = Invoice.of(new InventoryIdentifierFactory().nextPlantInventoryEntryID(),
@@ -36,7 +40,13 @@ public class InvoicingService {
                 LocalDate.now().plusDays(14));
         invoiceRepository.save(invoice);
         InvoiceDTO invoiceDTO = invoiceAssembler.toResource(invoice);
-        Unirest.post(purchaseOrder.getCustomer().getBase_url()+ "/api/invoicing/invoice").body(invoiceDTO);
+        HttpEntity<InvoiceDTO> request = new HttpEntity<>(invoiceDTO);
+        restTemplate.exchange(
+                purchaseOrder.getCustomer().getBase_url()+ "/api/invoicing/invoice",
+                HttpMethod.POST,
+                request,
+                InvoiceDTO.class
+        );
     }
 
     public InvoiceDTO findInvoice(String id) {
