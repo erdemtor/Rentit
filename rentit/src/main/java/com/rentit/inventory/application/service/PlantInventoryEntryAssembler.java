@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import retrofit.http.GET;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
@@ -26,18 +27,22 @@ public class PlantInventoryEntryAssembler extends ResourceAssemblerSupport<Plant
     @Override
     public PlantInventoryEntryDTO toResource(PlantInventoryEntry plantInventoryEntry) {
         PlantInventoryEntryDTO dto = createResourceWithId(plantInventoryEntry.getId(), plantInventoryEntry);
-        try {
+      /*  try {
             dto.add(new ExtendedLink(
                     ControllerLinkBuilder.linkTo(methodOn(InventoryRestController.class)
                             .show(plantInventoryEntry.getId())).toString(), "self", org.springframework.http.HttpMethod.GET));
         } catch (PlantNotFoundException e) {
             e.printStackTrace();
-        }
+        }*/
         dto.set_id(plantInventoryEntry.getId());
         dto.setName(plantInventoryEntry.getName());
         dto.setDescription(plantInventoryEntry.getDescription());
         dto.setPrice(plantInventoryEntry.getPrice());
         return dto;
+    }
+
+    public List<PlantInventoryEntryDTO> toResources(List<PlantInventoryEntry> plants) {
+        return plants.stream().map( plant -> toResource(plant) ).collect(Collectors.toList());
     }
 
 }

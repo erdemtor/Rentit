@@ -1,10 +1,13 @@
 package com.rentit.inventory.rest.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rentit.common.application.exceptions.PlantNotFoundException;
 import com.rentit.inventory.application.dto.PlantInventoryEntryDTO;
 import com.rentit.inventory.application.service.InventoryService;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -20,15 +23,17 @@ import java.util.Optional;
 public class InventoryRestController {
     @Autowired
     InventoryService inventoryService;
+    @Autowired @Qualifier("objectMapper")
+    ObjectMapper objectMapper;
 
     @GetMapping
-    public List<PlantInventoryEntryDTO> findAvailablePlants(
+    public String findAvailablePlants(
             @RequestParam(name = "name", required = false) Optional<String> plantName,
             @RequestParam(name = "startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-            @RequestParam(name = "endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+            @RequestParam(name = "endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) throws JsonProcessingException {
             if (endDate.isBefore(startDate))
                 throw new IllegalArgumentException("Something wrong with the requested period ('endDate' happens before 'startDate')");
-            return inventoryService.findAvailablePlants(plantName.orElse(""), startDate, endDate);
+            return objectMapper.writer().writeValueAsString(inventoryService.findAvailablePlants(plantName.orElse(""), startDate, endDate));
 
     }
 
