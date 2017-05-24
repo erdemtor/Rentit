@@ -1,5 +1,6 @@
 package com.rentit.common.security;
 
+import com.rentit.invoicing.domain.models.Customer;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,6 +25,10 @@ public class AuthenticationController {
             for (GrantedAuthority authority: details.getAuthorities()) {
                 roles.add(authority.getAuthority());
             }
+        }
+        if (principal instanceof Customer) {
+            Customer details = (Customer) principal;
+            roles.add(details.getAuthority());
         }
         return roles;
     }

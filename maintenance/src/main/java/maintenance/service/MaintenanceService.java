@@ -1,5 +1,7 @@
 package maintenance.service;
 
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import maintenance.domain.dto.MaintenanceTaskDTO;
 import maintenance.domain.model.BusinessPeriod;
 import maintenance.domain.model.MaintenanceTask;
@@ -25,7 +27,7 @@ public class MaintenanceService {
     @Autowired
     MaintenanceTaskAssembler assembler;
 
-    @Value("main_url")
+    @Value("${main_url}")
     String base_url;
 
     public MaintenanceTaskDTO createTask(MaintenanceTaskDTO taskDTO) {
@@ -36,7 +38,14 @@ public class MaintenanceService {
     }
 
     private void notifyMaintenance(MaintenanceTaskDTO taskDTO) {
-
+        String url = base_url+"/"+ taskDTO.getItemId() +"/maintenance?startDate="+ taskDTO.getBusinessPeriod().getStartDate()
+                +"&endDate="+taskDTO.getBusinessPeriod().getEndDate();
+        System.out.println(url);
+        try {
+            System.out.println(Unirest.put(url).asString().getBody());
+        } catch (UnirestException e) {
+            e.printStackTrace();
+        }
     }
 
     public boolean isAvailable(String plantId, LocalDate startDate, LocalDate endDate) {

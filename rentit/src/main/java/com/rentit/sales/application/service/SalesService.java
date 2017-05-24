@@ -13,6 +13,7 @@ import com.rentit.inventory.domain.repository.PlantReservationRepository;
 import com.rentit.invoicing.domain.models.Customer;
 import com.rentit.invoicing.domain.repository.CustomerRepository;
 import com.rentit.sales.application.dto.PurchaseOrderDTO;
+import com.rentit.sales.domain.model.POStatus;
 import com.rentit.sales.domain.model.PurchaseOrder;
 import com.rentit.sales.domain.repository.PurchaseOrderRepository;
 import com.rentit.sales.infrastructure.SalesIdentifierFactory;
@@ -56,6 +57,18 @@ public class SalesService {
             return purchaseOrderAssembler.toResource(po);
         } catch (PlantNotFoundException e) {
             po.handleRejection();
+            purchaseOrderRepository.save(po);
+            throw e;
+        }
+    }
+
+    public PurchaseOrder assignNewReservationForPurchaseOrder(PurchaseOrder po) throws PlantNotFoundException {
+        try {
+            PlantReservation plantReservation = inventoryService.createPlantReservation(po.getPlant(), po.getRentalPeriod());
+            po.confirmReservation(plantReservation);
+            return  purchaseOrderRepository.save(po);
+        } catch (PlantNotFoundException e) {
+            po.updateStatus(POStatus.REJECTED);
             purchaseOrderRepository.save(po);
             throw e;
         }

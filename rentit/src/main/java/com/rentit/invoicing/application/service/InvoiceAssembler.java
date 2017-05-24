@@ -1,8 +1,5 @@
 package com.rentit.invoicing.application.service;
 
-import com.rentit.inventory.application.dto.PlantInventoryEntryDTO;
-import com.rentit.inventory.domain.model.PlantInventoryEntry;
-import com.rentit.inventory.rest.controller.InventoryRestController;
 import com.rentit.invoicing.InvoiceController;
 import com.rentit.invoicing.application.dto.InvoiceDTO;
 import com.rentit.invoicing.domain.models.Invoice;

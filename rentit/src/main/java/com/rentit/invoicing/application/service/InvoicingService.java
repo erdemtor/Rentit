@@ -72,7 +72,7 @@ public class InvoicingService {
 
     public void sendReminder(Invoice invoice) {
         Unirest
-                .post(invoice.getPurchaseOrder().getCustomer().getBase_url()+ "/api/invoicing/invoice")
+        .post(invoice.getPurchaseOrder().getCustomer().getBase_url()+ "/api/invoicing/invoice")
                 .body(invoiceAssembler.toResource(invoice));
     }
 

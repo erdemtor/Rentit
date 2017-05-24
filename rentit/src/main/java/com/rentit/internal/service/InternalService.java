@@ -1,14 +1,22 @@
 package com.rentit.internal.service;
 
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
+import com.rentit.common.application.exceptions.PlantNotFoundException;
 import com.rentit.common.application.exceptions.PurchaseOrderNotFoundException;
+import com.rentit.common.domain.model.BusinessPeriod;
 import com.rentit.inventory.application.dto.PlantInventoryEntryDTO;
 import com.rentit.inventory.application.service.PlantInventoryEntryAssembler;
+import com.rentit.inventory.domain.model.PlantInventoryEntry;
+import com.rentit.inventory.domain.repository.PlantInventoryItemRepository;
 import com.rentit.invoicing.application.service.InvoicingService;
 import com.rentit.sales.application.dto.PurchaseOrderDTO;
 import com.rentit.sales.application.service.PurchaseOrderAssembler;
+import com.rentit.sales.application.service.SalesService;
 import com.rentit.sales.domain.model.POStatus;
 import com.rentit.sales.domain.model.PurchaseOrder;
 import com.rentit.sales.domain.repository.PurchaseOrderRepository;
+import com.sun.xml.internal.bind.v2.TODO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,8 +35,10 @@ public class InternalService {
     PurchaseOrderAssembler purchaseOrderAssembler;
     @Autowired
     InvoicingService invoicingService;
-
-
+    @Autowired
+    PlantInventoryItemRepository plantInventoryItemRepository;
+    @Autowired
+    SalesService salesService;
     @Autowired
     PlantInventoryEntryAssembler plantInventoryEntryAssembler;
 
@@ -50,5 +60,34 @@ public class InternalService {
         invoicingService.sendInvoice(purchaseOrderId);
         return this.updateStatus(purchaseOrderId, POStatus.PLANT_RETURNED);
 
+    }
+
+    public String updatePurchaseOrdersAboutMaintenance(String plantId, BusinessPeriod task) {
+        PlantInventoryEntry entry = plantInventoryItemRepository.findOne(plantId).getPlantInfo();
+        List<PurchaseOrder> purchaseOrders = purchaseOrderRepository.findAllByPlant(entry.getId());
+        purchaseOrders
+                .stream()
+                .filter(order ->
+                        order.getPlantReservation().getPlant().getId().equals(plantId) &&
+                        task.isIntersectingWith(order.getRentalPeriod()))
+                .forEach(purchaseOrder -> {
+                    try {
+                        salesService.assignNewReservationForPurchaseOrder(purchaseOrder);
+                    } catch (PlantNotFoundException e) {
+                        notifyCustomerAboutCancel(purchaseOrder);
+                    }
+                });
+        return "success";
+    }
+
+    public String notifyCustomerAboutCancel(PurchaseOrder purchaseOrder) {
+        try {
+            String url = purchaseOrder.getCustomer().getBase_url()+"/api/procurement/phr/order/"+purchaseOrder.getId()+"/cancel";
+            System.out.println(url);
+            System.out.println(Unirest.delete(url).basicAuth("site", "site").asString().getBody());
+        } catch (UnirestException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

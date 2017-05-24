@@ -1,11 +1,8 @@
 package com.rentit.inventory.application.service;
 
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.exceptions.UnirestException;
 import com.rentit.common.application.exceptions.PlantNotFoundException;
 import com.rentit.common.domain.model.BusinessPeriod;
 import com.rentit.common.service.MaintenanceService;
-import com.rentit.inventory.application.dto.MaintenanceTaskDTO;
 import com.rentit.inventory.application.dto.PlantInventoryEntryDTO;
 import com.rentit.inventory.domain.model.PlantInventoryEntry;
 import com.rentit.inventory.domain.model.PlantInventoryItem;
@@ -22,7 +19,7 @@ import java.util.List;
 
 @Service
 public class InventoryService {
-    @Value("maintenanceURL")
+    @Value("${maintenanceURL}")
     String maintenanceURL;
     @Autowired
     InventoryRepository inventoryRepository;

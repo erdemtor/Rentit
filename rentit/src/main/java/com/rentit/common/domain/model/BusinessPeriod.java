@@ -32,5 +32,7 @@ public class BusinessPeriod {
     private boolean isWeekend(LocalDate date){
        return  (date.getDayOfWeek().equals(DayOfWeek.SATURDAY) || date.getDayOfWeek().equals(DayOfWeek.SUNDAY));
     }
-
+    public boolean isIntersectingWith(BusinessPeriod other){
+        return  !(this.getStartDate().isAfter(other.getEndDate()) || other.getStartDate().isAfter(this.getEndDate()));
+    }
 }

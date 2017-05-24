@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@PreAuthorize("hasRole('ROLE_customer')")
+@PreAuthorize("hasRole('ROLE_CUSTOMER')")
 @RequestMapping("/api/sales/orders")
 public class SalesRestController {
     @Autowired
