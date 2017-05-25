@@ -57,8 +57,8 @@ public class SalesService {
             return purchaseOrderAssembler.toResource(po);
         } catch (PlantNotFoundException e) {
             po.handleRejection();
-            purchaseOrderRepository.save(po);
-            throw e;
+            return purchaseOrderAssembler.toResource(purchaseOrderRepository.save(po));
+
         }
     }
 
