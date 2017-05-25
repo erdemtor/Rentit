@@ -3,6 +3,7 @@ package com.rentit.sales.application.dto;
 import com.rentit.common.application.dto.BusinessPeriodDTO;
 import com.rentit.common.rest.ResourceSupport;
 import com.rentit.inventory.application.dto.PlantInventoryEntryDTO;
+import com.rentit.inventory.domain.model.PlantInventoryItem;
 import com.rentit.sales.domain.model.POStatus;
 import lombok.Data;
 
@@ -15,4 +16,5 @@ public class PurchaseOrderDTO extends ResourceSupport {
     BusinessPeriodDTO rentalPeriod;
     BigDecimal total;
     POStatus status;
+    String plantInventoryItemId;
 }

@@ -4,6 +4,7 @@ import com.rentit.common.application.exceptions.PlantInventoryEntryNotAvailableE
 import com.rentit.common.application.exceptions.PlantNotFoundException;
 import com.rentit.common.application.exceptions.PurchaseOrderNotFoundException;
 import com.rentit.common.application.exceptions.PurchaseOrderRejectionPeriodException;
+import com.rentit.invoicing.domain.models.Customer;
 import com.rentit.sales.application.dto.PurchaseOrderDTO;
 import com.rentit.sales.application.service.SalesService;
 import org.json.JSONObject;
@@ -13,6 +14,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import retrofit.http.PATCH;
@@ -33,7 +36,8 @@ public class SalesRestController {
 
     @PostMapping
     public PurchaseOrderDTO createPurchaseOrder(@RequestBody PurchaseOrderDTO poDTO) throws Exception {
-        poDTO = salesService.createPurchaseOrder(poDTO, SecurityContextHolder.getContext().getAuthentication().getName());
+        Customer customer = (Customer) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        poDTO = salesService.createPurchaseOrder(poDTO, customer.getEmail());
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(new URI(poDTO.getId().getHref()));
         return poDTO;
