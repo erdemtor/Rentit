@@ -38,7 +38,7 @@ public class MaintenanceService {
     }
 
     private void notifyMaintenance(MaintenanceTaskDTO taskDTO) {
-        String url = base_url+"/"+ taskDTO.getItemId() +"/maintenance?startDate="+ taskDTO.getBusinessPeriod().getStartDate()
+        String url = base_url+"/"+ taskDTO.getItemId() +"/?startDate="+ taskDTO.getBusinessPeriod().getStartDate()
                 +"&endDate="+taskDTO.getBusinessPeriod().getEndDate();
         System.out.println(url);
         try {
