@@ -31,7 +31,7 @@ public class MaintenanceController {
         return maintenanceService.findTask(taskId);
     }
 
-    @GetMapping("/task")
+    @GetMapping()
     List<MaintenanceTaskDTO> findTask(){
         return maintenanceService.findAll();
     }

@@ -15,8 +15,7 @@ import java.util.List;
 
 @Service
 public class MaintenanceService {
-    @Value("${maintenanceURL}")
-    String maintenanceURL;
+    String maintenanceURL= "http://0.0.0.0:8888/api/maintenance/plants/";
 
     public boolean isAvailable(List<PlantInventoryItem> items, BusinessPeriod schedule){
         return items.parallelStream().anyMatch(item-> this.isAvailable(item, schedule));
