@@ -61,7 +61,7 @@ public class SalesRestController {
         return salesService.acceptPurchaseOrder(id);
     }
 
-    @DeleteMapping("/{id}/reject")
+    @DeleteMapping("/{id}/cancel")
     public PurchaseOrderDTO rejectPurchaseOrder(@PathVariable String id) throws Exception {
         return salesService.rejectPurchaseOrder(id);
     }

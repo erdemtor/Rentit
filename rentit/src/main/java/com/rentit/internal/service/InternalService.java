@@ -16,7 +16,6 @@ import com.rentit.sales.application.service.SalesService;
 import com.rentit.sales.domain.model.POStatus;
 import com.rentit.sales.domain.model.PurchaseOrder;
 import com.rentit.sales.domain.repository.PurchaseOrderRepository;
-import com.sun.xml.internal.bind.v2.TODO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
